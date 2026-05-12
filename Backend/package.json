@@ -1,0 +1,23 @@
+{
+  "name": "poli-tienda",
+  "version": "1.0.0",
+  "description": "e-commerce del poli",
+  "homepage": "https://github.com/boensaco/Poli-tienda#readme",
+  "bugs": {
+    "url": "https://github.com/boensaco/Poli-tienda/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/boensaco/Poli-tienda.git"
+  },
+  "license": "ISC",
+  "author": "Boris Enrique Sanchez Cortes",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
