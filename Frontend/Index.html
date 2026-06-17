@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
     <meta charset="UTF-8">
@@ -8,6 +9,7 @@
     <link rel="stylesheet" href="css/estilos.css">
 
 </head>
+
 <body>
     <header class="cabeza">
         <div class="division">
@@ -17,41 +19,73 @@
         </div>
     </header>
 
-<div class="productos">   
-    <div>
-        <img src="assiets/xdjxr1-576x433.jpg" alt="consola 1" class="pro1">
-        <h1>Bienvenido a Poli-Tienda</h1>
-        <p>Tu tienda en línea de confianza para productos de calidad.</p>
-        <button>descripcion</button>
-        <button>Comprar</button>
+    <div class="productos" id="contenedor-productos">
+
     </div>
 
     <div>
-        <img src="assiets/cover_255085440_286000350078810_103070986310696145_n-800x541.jpg" alt="consola 2" class="pro1">
-        <h1>Bienvenido a Poli-Tienda</h1>
-        <p>Tu tienda en línea de confianza para productos de calidad.</p>
-        <button>descripcion</button>
-        <button>Comprar</button>
+        <img src="assiets/shopping-cart_icon-icons.com_69303.svg" alt="carrito" class="carrito">
     </div>
 
-    <div>
-        <img src="assiets/xdj-rx3_1.png" alt="consola 3" class="pro1">
-        <h1>Bienvenido a Poli-Tienda</h1>
-        <p>Tu tienda en línea de confianza para productos de calidad.</p>        
-        <button>descripcion</button>
-        <button>Comprar</button>
-    </div>
-</div>
+    <footer class="final">
+        <p>&copy; 2024 Poli-Tienda. Todos los derechos reservados.</p>
+    </footer>
 
-<div>
-    <img src="assiets/shopping-cart_icon-icons.com_69303.svg" alt="carrito" class="carrito">
-</div>
+    <script>
+        async function cargarProductos() {
+        const contenedor = document.getElementById('contenedor-productos')
 
+        try {
+            const respuesta = await fetch('http://localhost:4000/api/productos')
+            const json = await respuesta.json()
+            const productos = json.data
+            
+            contenedor.innerHTML = ''
 
+            if (productos.length === 0) {
+                contenedor.innerHTML = '<p>No hay productos disponibles.</p>'
+                return
+            }
+
+            productos.forEach(producto => {
+                const card = document.createElement('div')
+                card.classList.add('card-producto')
+
+                card.innerHTML = `
+                    <img 
+                        src="${producto.imagen_url || 'assiets/xdjxr1-576x433.jpg'}" 
+                        alt="${producto.nombre}"
+                        class="pro1"
+                        onerror="this.src='assiets/xdjxr1-576x433.jpg'"
+                    >
+                    <h2>${producto.nombre}</h2>
+                    <p>${producto.descripcion || 'Sin descripción'}</p>
+                    <p class="precio">$${Number(producto.precio).toLocaleString('es-CO')}</p>
+                    <p class="stock">Stock: ${producto.stock}</p>
+                    <div class="botones">
+                        <button onclick="verDescripcion(${producto.id_producto})">Descripción</button>
+                        <button onclick="agregarAlCarrito(${producto.id_producto})">Comprar</button>
+                    </div>
+                `
+                contenedor.appendChild(card)
+            })
+
+        } catch (error) {
+            console.error('Error al cargar productos:', error)
+            contenedor.innerHTML = '<p>Error al cargar los productos. ¿Está el servidor corriendo?</p>'
+        }
+    }
+
+    function verDescripcion(id) {
+        console.log('Ver descripción del producto:', id)
+    }
+
+    function agregarAlCarrito(id) {
+        console.log('Agregar al carrito:', id)
+    }
+    cargarProductos()
+    </script>
 </body>
 
-<footer class="final">
-    <p>&copy; 2024 Poli-Tienda. Todos los derechos reservados.</p>
-</footer>
 
 </html>

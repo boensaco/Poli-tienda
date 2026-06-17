@@ -1,11 +1,10 @@
-const db = requier('../config/database')
+const db = require('../config/database')
 
-class ProductosModel{
-
-    static async obtenerProductos(){
+class ProductosModel {
+    static async obtenerProductos() {
         const basedatos = await db()
         const resultados = await basedatos.query('SELECT * FROM productos')
-        return resultados 
+        return resultados.recordset 
     }
 }
 

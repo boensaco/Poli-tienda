@@ -4,33 +4,39 @@
     box-sizing: border-box;
 }
 
+:root {
+    --bg: rgb(128, 128, 128);
+    --text: #ffffff;
+    --card-radius: 12px;
+    --gap: 16px;
+}
+
 .division{
-    background-color: rgb(128, 128, 128);
-    color: white;
+    background-color: var(--bg);
+    color: var(--text);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 10px 16px;
 }
 
 .Logo{
-
     width: 70px;
     height: 70px;
     margin: 0;
-    padding: 0%;
-    float: left;
+    padding: 0;
 }
 
 .cabeza{
     margin: 0;
-    padding: 0%;
+    padding: 0;
     width: 100%;
     height: 100%;
 }
 
 .final{
-    background-color: rgb(128, 128, 128);
-    color: white;
+    background-color: var(--bg);
+    color: var(--text);
     text-align: center;
     padding: 10px;
     position: fixed;
@@ -38,30 +44,88 @@
     width: 100%;
 }
 
-.productos{
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin-top: 20px;
+/* Evita que el footer fijo tape contenido */
+body {
+    padding-bottom: 60px;
 }
 
-.productos div{
-    background-color: rgb(128, 128, 128);
-    color: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 30%;
+.productos{
+    margin: 20px auto 0;
+    width: min(1200px, 92vw);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: var(--gap);
+    align-items: stretch;
+}
+
+/* Las tarjetas se crean con class="card-producto" en index.html */
+.card-producto{
+    background-color: var(--bg);
+    color: var(--text);
+    padding: 16px;
+    border-radius: var(--card-radius);
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 100%;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.18);
 }
 
 .pro1{
     width: 100%;
     height: 200px;
     object-fit: cover;
+    border-radius: 10px;
+}
+
+.card-producto h2{
+    font-size: 1.1rem;
+    line-height: 1.2;
+}
+
+.card-producto p{
+    opacity: 0.95;
+    font-size: 0.95rem;
+}
+
+.card-producto .precio{
+    font-weight: 700;
+    font-size: 1.05rem;
+}
+
+.card-producto .stock{
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.card-producto .botones{
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: auto; /* empuja botones hacia abajo */
+}
+
+.card-producto button{
+    cursor: pointer;
+    background: #2f2f2f;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 12px;
+    transition: transform 0.05s ease, background-color 0.15s ease;
+}
+
+.card-producto button:hover{
+    background: #1f1f1f;
+}
+
+.card-producto button:active{
+    transform: translateY(1px);
 }
 
 .carrito{
-    background-color: rgb(128, 128, 128);
+    background-color: var(--bg);
     display: flex;
     align-items: center;
     justify-content: center;
