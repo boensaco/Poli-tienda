@@ -93,6 +93,8 @@
         <p>&copy; 2024 Poli-Tienda. Todos los derechos reservados.</p>
     </footer>
 
+
+    
     <script>
         async function cargarProductos() {
         const contenedor = document.getElementById('contenedor-productos')
@@ -146,7 +148,30 @@
         console.log('Agregar al carrito:', id)
     }
     cargarProductos()
+
+    let carrito = [];
+
+    function agregarAlCarrito(id) {
+    const producto = carrito.find(p => p.id === id);
+
+    if (producto) {
+        producto.cantidad++;
+    } else {
+        carrito.push({ id: id, cantidad: 1 });
+    }
+
+    actualizarCarrito();
+    }
+
+    function actualizarCarrito() {
+    const contador = document.getElementById('cart-count');
+
+    const total = carrito.reduce((acc, item) => acc + item.cantidad, 0);
+
+    contador.textContent = total;
+    }    
     </script>
+    
 </body>
 
 </html>
