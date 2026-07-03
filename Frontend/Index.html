@@ -1,11 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Index</title>
+
+    <meta
+        name="description"
+        content="Poli-Tienda es una tienda virtual especializada en equipos para DJ, mezcladores, controladoras, audífonos y accesorios profesionales.">
+
+    <title>Poli-Tienda | Equipos para DJ</title>
+    <link rel="icon" href="assets/DJ_13492.png">
     <link rel="stylesheet" href="css/estilos.css">
 
 </head>
@@ -13,18 +19,22 @@
 <body>
     <header class="cabeza">
         <div class="division">
-            <img src="assiets/DJ_13492.png" alt="Logo" class="Logo">
+            <img src="assets/DJ_13492.png" alt="Logo" class="Logo">
             <h1><strong>Bad-B</strong></h1>
             <a href="login.html" class="usuario">Iniciar sesión</a>
         </div>
     </header>
 
-    <div class="productos" id="contenedor-productos">
+    <main class="productos" id="contenedor-productos">
 
-    </div>
+    </main>
 
     <div>
-        <img src="assiets/shopping-cart_icon-icons.com_69303.svg" alt="carrito" class="carrito">
+        <img 
+        src="assets/shopping-cart_icon-icons.com_69303.svg" 
+        alt="Carrito de compras" 
+        class="carrito">
+
     </div>
 
     <footer class="final">
@@ -53,10 +63,10 @@
 
                 card.innerHTML = `
                     <img 
-                        src="${producto.imagen_url || 'assiets/xdjxr1-576x433.jpg'}" 
+                        src="${producto.imagen_url || 'assets/xdjxr1-576x433.jpg'}" 
                         alt="${producto.nombre}"
                         class="pro1"
-                        onerror="this.src='assiets/xdjxr1-576x433.jpg'"
+                        onerror="this.src='assets/xdjxr1-576x433.jpg'"
                     >
                     <h2>${producto.nombre}</h2>
                     <p>${producto.descripcion || 'Sin descripción'}</p>
