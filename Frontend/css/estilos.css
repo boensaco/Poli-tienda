@@ -235,3 +235,27 @@ body {
         display: none;
     }
 }
+
+/* SECCIÓN NOSOTROS */
+.nosotros{
+    width: min(900px, 92vw);
+    margin: 60px auto;
+    padding: 30px;
+    background: #1a1a1a;
+    color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+    text-align: center;
+}
+
+.nosotros h2{
+    margin-bottom: 15px;
+    font-size: 1.8rem;
+    color: #00f0ff;
+}
+
+.nosotros p{
+    margin-bottom: 12px;
+    line-height: 1.6;
+    opacity: 0.9;
+}
