@@ -1,3 +1,4 @@
+
 const sqlServer = require('mssql')
 
 const dbConfig = {
@@ -21,4 +22,3 @@ const conexion = async()=>{
     }
 }
 
-module.exports = conexion

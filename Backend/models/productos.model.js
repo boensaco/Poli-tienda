@@ -9,8 +9,4 @@ class ProductosModel {
 }
 
 module.exports = ProductosModel
-//metodo rapido de prueba
-//(async () => {
-//   const productos = await ProductosModel.obtenerProductos()
-//    console.log(productos)
-//})()
+
