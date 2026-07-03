@@ -1,24 +1,27 @@
-
-const sqlServer = require('mssql')
+const sqlServer = require('mssql');
 
 const dbConfig = {
-    user: '',
-    password: '',
+    user: 'sa',
+    password: 'Rigoberto97',
     server: 'localhost',
     database: 'Bad_BTienda',
     options: {
         encrypt: false,
-        TrustServerCertificate: true
+        trustServerCertificate: true
     }
-}
+};
 
-const conexion = async()=>{
+const conexion = async () => {
     try {
-        const pool = await sqlServer.connect(dbConfig)
-        return pool
-        
+        const pool = await sqlServer.connect(dbConfig);
+        console.log('Conectado a SQL Server');
+        return pool;
     } catch (error) {
-        console.log('Error en la conexion: ',error)
+        console.error('========== ERROR SQL ==========');
+        console.error(error);
+        console.error('===============================');
+        throw error;
     }
-}
+};
 
+module.exports = conexion;
