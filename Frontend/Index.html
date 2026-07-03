@@ -34,13 +34,34 @@
         <div class="nav-actions">
             <a href="login.html" class="login-btn">Iniciar sesión</a>
 
-            <div class="cart">
+            <div class="cart" onclick="abrirCarrito()" style="cursor:pointer;">
                 <img src="assets/shopping-cart_icon-icons.com_69303.svg" alt="Carrito">
                 <span id="cart-count">0</span>
             </div>
         </div>
 
     </header>
+
+    <aside id="panel-carrito" class="panel-carrito oculto">
+
+        <div class="cabecera-carrito">
+            <h2>🛒 Mi carrito</h2>
+            <button onclick="cerrarCarrito()">✖</button>
+        </div>
+
+        <div id="lista-carrito">
+
+        </div>
+
+        <div class="pie-carrito">
+            <p>Total artículos: <span id="total-articulos">0</span></p>
+
+            <button onclick="vaciarCarrito()">
+                Vaciar carrito
+            </button>
+        </div>
+
+    </aside>
 
     <main class="productos" id="contenedor-productos">
 
@@ -81,29 +102,27 @@
 
     </section>
 
-    <div>
-        <img 
-        src="assets/shopping-cart_icon-icons.com_69303.svg" 
-        alt="Carrito de compras" 
-        class="carrito">
-
-    </div>
 
     <footer class="final">
         <p>&copy; 2024 Poli-Tienda. Todos los derechos reservados.</p>
     </footer>
 
-    
+
     <script>
         async function cargarProductos() {
             const contenedor = document.getElementById('contenedor-productos')
 
             try {
-                const respuesta = await fetch('http://localhost:4000/api/productos')
-                const json = await respuesta.json()
-                const productos = json.data
+                const respuesta = await fetch('http://localhost:4000/api/productos');
 
-                contenedor.innerHTML = ''
+                if (!respuesta.ok) {
+                    throw new Error('No se pudo obtener la información del servidor.');
+                }
+
+                const json = await respuesta.json();
+                const productos = json.data || [];
+
+                contenedor.innerHTML = '';
 
                 if (productos.length === 0) {
                     contenedor.innerHTML = '<p>No hay productos disponibles.</p>'
@@ -173,6 +192,17 @@
         // cargar contador al iniciar
         actualizarCarrito();
         cargarProductos();
+
+        function abrirCarrito() {
+            const panel = document.getElementById('panel-carrito');
+            panel.classList.remove('oculto');
+        };
+
+        function cerrarCarrito() {
+            const panel = document.getElementById('panel-carrito');
+            panel.classList.add('oculto');
+        };
+
     </script>
 
 </body>

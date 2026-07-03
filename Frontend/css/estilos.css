@@ -304,3 +304,21 @@ body {
 .form-contacto button:hover{
     background: #00c2cc;
 }
+
+.panel-carrito {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 320px;
+    height: 100vh;
+    background: white;
+    box-shadow: -4px 0 10px rgba(0,0,0,0.2);
+    z-index: 1000;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.oculto {
+    display: none;
+}
