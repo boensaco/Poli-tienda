@@ -55,6 +55,11 @@
 
         <div class="pie-carrito">
             <p>Total artículos: <span id="total-articulos">0</span></p>
+            <h3 id="total-general">$0</h3>
+
+            <button onclick="finalizarCompra()">
+                Comprar ahora
+            </button>
 
             <button onclick="vaciarCarrito()">
                 Vaciar carrito
@@ -108,147 +113,202 @@
     </footer>
 
 
-    <script>
-        async function cargarProductos() {
-            const contenedor = document.getElementById('contenedor-productos')
+<script>
+let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+let productosCache = [];
 
-            try {
-                const respuesta = await fetch('http://localhost:4000/api/productos');
+/* =========================
+   CARGAR PRODUCTOS
+========================= */
+async function cargarProductos() {
+    const contenedor = document.getElementById('contenedor-productos');
 
-                if (!respuesta.ok) {
-                    throw new Error('No se pudo obtener la información del servidor.');
-                }
+    try {
+        const respuesta = await fetch('http://localhost:4000/api/productos');
 
-                const json = await respuesta.json();
-                const productos = json.data || [];
-
-                contenedor.innerHTML = '';
-
-                if (productos.length === 0) {
-                    contenedor.innerHTML = '<p>No hay productos disponibles.</p>'
-                    return
-                }
-
-                productos.forEach(producto => {
-                    const card = document.createElement('div')
-                    card.classList.add('card-producto')
-
-                    card.innerHTML = `
-                        <img 
-                            src="${producto.imagen_url || 'assets/xdjxr1-576x433.jpg'}" 
-                            alt="${producto.nombre}"
-                            class="pro1"
-                            onerror="this.src='assets/xdjxr1-576x433.jpg'"
-                        >
-                        <h2>${producto.nombre}</h2>
-                        <p>${producto.descripcion || 'Sin descripción'}</p>
-                        <p class="precio">$${Number(producto.precio).toLocaleString('es-CO')}</p>
-                        <p class="stock">Stock: ${producto.stock}</p>
-                        <div class="botones">
-                            <button onclick="verDescripcion(${producto.id_producto})">Descripción</button>
-                            <button onclick="agregarAlCarrito(${producto.id_producto})">Comprar</button>
-                        </div>
-                    `
-                    contenedor.appendChild(card)
-                })
-
-            } catch (error) {
-                console.error('Error al cargar productos:', error)
-                contenedor.innerHTML = '<p>Error al cargar los productos. ¿Está el servidor corriendo?</p>'
-            }
+        if (!respuesta.ok) {
+            throw new Error('No se pudo obtener la información del servidor.');
         }
 
-        function verDescripcion(id) {
-            console.log('Ver descripción del producto:', id)
+        const json = await respuesta.json();
+        productosCache = json.data || [];
+
+        contenedor.innerHTML = '';
+
+        if (productosCache.length === 0) {
+            contenedor.innerHTML = '<p>No hay productos disponibles.</p>';
+            return;
         }
 
-        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+        productosCache.forEach(producto => {
+            const card = document.createElement('div');
+            card.classList.add('card-producto');
 
-        function agregarAlCarrito(id) {
-            const producto = carrito.find(p => p.id === id);
-
-            if (producto) {
-                producto.cantidad++;
-            } else {
-                carrito.push({ id: id, cantidad: 1 });
-            }
-
-            guardarCarrito();
-            actualizarCarrito();
-        }
-
-        function guardarCarrito() {
-            localStorage.setItem('carrito', JSON.stringify(carrito));
-        }
-
-        function actualizarCarrito() {
-            const contador = document.getElementById('cart-count');
-
-            const total = carrito.reduce((acc, item) => acc + item.cantidad, 0);
-
-            contador.textContent = total;
-        }
-
-        // cargar contador al iniciar
-        actualizarCarrito();
-        cargarProductos();
-
-        function abrirCarrito() {
-            const panel = document.getElementById('panel-carrito');
-            panel.classList.remove('oculto');
-
-            renderizarCarrito();
-        }
-
-        function cerrarCarrito() {
-            const panel = document.getElementById('panel-carrito');
-            panel.classList.add('oculto');
-        };
-
-        async function renderizarCarrito() {
-            const lista = document.getElementById('lista-carrito');
-
-            lista.innerHTML = '';
-
-            const productos = await obtenerProductos();
-
-            let total = 0;
-
-            carrito.forEach(item => {
-                const producto = productos.find(p => p.id_producto === item.id);
-
-                if (!producto) return;
-
-                const subtotal = producto.precio * item.cantidad;
-                total += subtotal;
-
-                const div = document.createElement('div');
-
-                div.innerHTML = `
-                    <p><b>${producto.nombre}</b></p>
-                    <p>Cantidad: ${item.cantidad}</p>
-                    <p>Subtotal: $${subtotal.toLocaleString('es-CO')}</p>
-                    <hr>
-                `;
-
-                lista.appendChild(div);
-            });
-
-            const totalDiv = document.createElement('div');
-            totalDiv.innerHTML = `
-                <h3>Total: $${total.toLocaleString('es-CO')}</h3>
+            card.innerHTML = `
+                <img 
+                    src="${producto.imagen_url || 'assets/xdjxr1-576x433.jpg'}" 
+                    alt="${producto.nombre}"
+                    class="pro1"
+                    onerror="this.src='assets/xdjxr1-576x433.jpg'"
+                >
+                <h2>${producto.nombre}</h2>
+                <p>${producto.descripcion || 'Sin descripción'}</p>
+                <p class="precio">$${Number(producto.precio).toLocaleString('es-CO')}</p>
+                <p class="stock">Stock: ${producto.stock}</p>
+                <div class="botones">
+                    <button onclick="verDescripcion(${producto.id_producto})">Descripción</button>
+                    <button onclick="agregarAlCarrito(${producto.id_producto})">Comprar</button>
+                </div>
             `;
 
-            lista.appendChild(totalDiv);
+            contenedor.appendChild(card);
+        });
+
+    } catch (error) {
+        console.error(error);
+        contenedor.innerHTML = '<p>Error al cargar los productos.</p>';
+    }
+}
+
+/* =========================
+   CARRITO - ACCIONES
+========================= */
+function verDescripcion(id) {
+    console.log('Ver descripción:', id);
+}
+
+function agregarAlCarrito(id) {
+    const producto = carrito.find(p => p.id === id);
+
+    if (producto) {
+        producto.cantidad++;
+    } else {
+        carrito.push({ id, cantidad: 1 });
+    }
+
+    guardarCarrito();
+    actualizarCarrito();
+}
+
+function aumentarCantidad(id) {
+    const producto = carrito.find(p => p.id === id);
+
+    if (producto) {
+        producto.cantidad++;
+        syncCarrito();
+    }
+}
+
+function disminuirCantidad(id) {
+    const producto = carrito.find(p => p.id === id);
+
+    if (producto) {
+        producto.cantidad--;
+
+        if (producto.cantidad <= 0) {
+            carrito = carrito.filter(p => p.id !== id);
         }
 
-        async function obtenerProductos() {
-            const respuesta = await fetch('http://localhost:4000/api/productos');
-            const json = await respuesta.json();
-            return json.data;
-        }
+        syncCarrito();
+    }
+}
 
-    </script>
+function eliminarProducto(id) {
+    carrito = carrito.filter(p => p.id !== id);
+    syncCarrito();
+}
+
+/* =========================
+   STORAGE + UI
+========================= */
+function guardarCarrito() {
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+}
+
+function actualizarCarrito() {
+    const contador = document.getElementById('cart-count');
+
+    const total = carrito.reduce((acc, item) => acc + item.cantidad, 0);
+    contador.textContent = total;
+}
+
+function syncCarrito() {
+    guardarCarrito();
+    actualizarCarrito();
+    renderizarCarrito();
+}
+
+/* =========================
+   PANEL CARRITO
+========================= */
+function abrirCarrito() {
+    const panel = document.getElementById('panel-carrito');
+    panel.classList.remove('oculto');
+    renderizarCarrito();
+}
+
+function cerrarCarrito() {
+    const panel = document.getElementById('panel-carrito');
+    panel.classList.add('oculto');
+}
+
+/* =========================
+   RENDER CARRITO
+========================= */
+async function renderizarCarrito() {
+    const lista = document.getElementById('lista-carrito');
+    lista.innerHTML = '';
+
+    if (!productosCache.length) return;
+
+    let total = 0;
+
+    carrito.forEach(item => {
+        const producto = productosCache.find(p => p.id_producto === item.id);
+        if (!producto) return;
+
+        const subtotal = producto.precio * item.cantidad;
+        total += subtotal;
+
+        const div = document.createElement('div');
+
+        div.innerHTML = `
+            <p><b>${producto.nombre}</b></p>
+            <p>Cantidad: ${item.cantidad}</p>
+
+            <button onclick="aumentarCantidad(${item.id})">+</button>
+            <button onclick="disminuirCantidad(${item.id})">-</button>
+            <button onclick="eliminarProducto(${item.id})">🗑</button>
+
+            <p>Subtotal: $${subtotal.toLocaleString('es-CO')}</p>
+            <hr>
+        `;
+
+        lista.appendChild(div);
+    });
+
+    const totalDiv = document.createElement('div');
+    totalDiv.innerHTML = `
+        <h3>Total: $${total.toLocaleString('es-CO')}</h3>
+    `;
+
+    lista.appendChild(totalDiv);
+}
+
+/* =========================
+   INIT
+========================= */
+document.addEventListener('DOMContentLoaded', () => {
+    const cartIcon = document.querySelector('.cart');
+
+    if (cartIcon) {
+        cartIcon.addEventListener('click', abrirCarrito);
+    }
+
+    actualizarCarrito();
+    cargarProductos();
+});
+</script>
 
 </body>
 
