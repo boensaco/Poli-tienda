@@ -264,7 +264,7 @@ async function renderizarCarrito() {
     let total = 0;
 
     carrito.forEach(item => {
-        const producto = productosCache.find(p => p.id_producto === item.id);
+        const producto = productosCache.find(p => Number(p.id_producto) === Number(item.id));
         if (!producto) return;
 
         const subtotal = producto.precio * item.cantidad;
